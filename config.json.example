@@ -14,7 +14,8 @@
   "use_gmail": true,
   "gmail_password": "",
   "no_email": false,
-  
+  "no_spamming": true,
+
   "notify_osx": false,
   "twilio_account_sid": "",
   "twilio_auth_token": "",

@@ -9,6 +9,9 @@ import logging
 import smtplib
 import sys
 import os
+import glob
+import requests
+import hashlib
 
 from datetime import datetime
 from os import path
@@ -18,9 +21,15 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 
-EMAIL_TEMPLATE = "%s"
+EMAIL_TEMPLATE = """
+<p>Good news! New Global Entry appointment(s) available on the following dates:</p>
+%s
+<p>Your current appointment is on %s</p>
+<p>If this sounds good, please sign in to https://ttp.cbp.dhs.gov/ to reschedule.</p>
+"""
+GOES_URL_FORMAT = 'https://ttp.cbp.dhs.gov/schedulerapi/slots?orderBy=soonest&limit=3&locationId={0}&minimum=1'
 
-def notify_send_email(body, settings, use_gmail=False):
+def notify_send_email(dates, current_apt, settings, use_gmail=False):
     sender = settings.get('email_from')
     recipient = settings.get('email_to', sender)  # If recipient isn't provided, send to self.
 
@@ -44,7 +53,14 @@ def notify_send_email(body, settings, use_gmail=False):
                     server.login(username, password)
 
         subject = "Alert: Globaly Entry interview openings are available"
-        message = body
+
+        dateshtml = '<ul>'
+        for d in dates:
+            dateshtml += "<li>" + d + "</li>"
+
+        dateshtml += "</ul>"
+
+        message = EMAIL_TEMPLATE % (dateshtml, current_apt.strftime('%B %d, %Y'))
 
         msg = MIMEMultipart()
         msg['Subject'] = subject
@@ -60,27 +76,78 @@ def notify_send_email(body, settings, use_gmail=False):
         logging.exception('Failed to send succcess e-mail.')
         log(e)
 
+def notify_osx(msg):
+    commands.getstatusoutput("osascript -e 'display notification \"%s\" with title \"Global Entry Notifier\"'" % msg)
+
+def notify_sms(settings, avail_apt):
+    try:
+        from twilio.rest import Client
+    except ImportError:
+        logging.warning('Trying to send SMS, but TwilioRestClient not installed. Try \'pip install twilio\'')
+        return
+
+    try:
+        account_sid = settings['twilio_account_sid']
+        auth_token = settings['twilio_auth_token']
+        from_number = settings['twilio_from_number']
+        to_number = settings['twilio_to_number']
+        assert account_sid and auth_token and from_number and to_number
+    except (KeyError, AssertionError):
+        logging.warning('Trying to send SMS, but one of the required Twilio settings is missing or empty')
+        return
+
+    # Twilio logs annoyingly, silence that
+    logging.getLogger('twilio').setLevel(logging.WARNING)
+    client = Client(account_sid, auth_token)
+    body = 'New appointment available on %s' % avail_apt.strftime('%B %d, %Y')
+    logging.info('Sending SMS.')
+    client.messages.create(body=body, to=to_number, from_=from_number)
+
 def main(settings):
     try:
         # obtain the json from the web url
-		
-	# parse the json
-	
-	# determine
-	# if it's any different than the previous check OR current date check is different
-	# if it's the same, exit, we already notified
-		
-        if not script_output or script_output == 'None':
+        data = requests.get(GOES_URL_FORMAT.format(settings['enrollment_location_id'])).json()
+
+    	# parse the json
+        if not data:
             logging.info('No tests available.')
             return
+
+        current_apt = datetime.strptime(settings['current_interview_date_str'], '%B %d, %Y')
+        dates = []
+        for o in data:
+            if o['active']:
+                dt = o['startTimestamp'] #2017-12-22T15:15
+                dtp = datetime.strptime(dt, '%Y-%m-%dT%H:%M')
+                if current_apt > dtp:
+                    dates.append(dtp.strftime('%B %d, %Y @ %I:%M%p'))
+
+        if not dates:
+            return
+
+        hash = hashlib.md5(''.join(dates) + current_apt.strftime('%B %d, %Y @ %I:%M%p')).hexdigest()
+        fn = "goes-notify_{0}.txt".format(hash)
+        if settings.get('no_spamming') and os.path.exists(fn):
+            return
+        else:
+            for f in glob.glob("goes-notify_*.txt"):
+                os.remove(f)
+            f = open(fn,"w")
+            f.close()
 
     except OSError:
         logging.critical("Something went wrong when trying to obtain the openings")
         return
 
-    if not settings.get('no_email'):
-        notify_send_email("", settings, use_gmail=settings.get('use_gmail'))
+    msg = 'Found new appointment(s) in location %s on %s (current is on %s)!' % (settings.get("enrollment_location_id"), dates[0], current_apt.strftime('%B %d, %Y @ %I:%M%p'))
+    logging.info(msg + (' Sending email.' if not settings.get('no_email') else ' Not sending email.'))
 
+    if settings.get('notify_osx'):
+        notify_osx(msg)
+    if not settings.get('no_email'):
+        notify_send_email(dates, current_apt, settings, use_gmail=settings.get('use_gmail'))
+    if settings.get('twilio_account_sid'):
+        notify_sms(settings, new_apt)
 
 def _check_settings(config):
     required_settings = (
