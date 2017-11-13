@@ -64,7 +64,11 @@ def main(settings):
     try:
         # obtain the json from the web url
 		
-		# parse the json
+	# parse the json
+	
+	# determine
+	# if it's any different than the previous check OR current date check is different
+	# if it's the same, exit, we already notified
 		
         if not script_output or script_output == 'None':
             logging.info('No tests available.')
