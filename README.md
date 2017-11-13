@@ -5,6 +5,12 @@ This app will simply parse json output from the global entry interview scheduler
 Based on the ge-cancellation-checker that originally utilized phantomjs to login as the user:
 https://github.com/davidofwatkins/ge-cancellation-checker
 
+# Getting started
+- Clone the repo
+- Copy or rename config.json.example to config.json
+- Enter required fields into config.json
+- The interview date should be in this format "December 10, 2017"
+
 ## GOES center codes
 
 | ID    | Enrollment Center Name                                                                                                                |
