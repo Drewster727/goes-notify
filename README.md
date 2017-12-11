@@ -1,6 +1,6 @@
 # goes-notify
 
-This app will simply parse json output from the global entry interview scheduler. You don't need to provide a login, it will simply check the available dates with your current interview date and notify you when a better date can be locked in.
+This app will simply parse json output from the global entry interview scheduler. You don't need to provide a login, it will simply check the available dates against your current interview date, then notify you if a better date can be locked in.
 
 Based on the ge-cancellation-checker that originally utilized phantomjs to login as the user:
 https://github.com/davidofwatkins/ge-cancellation-checker
