@@ -52,7 +52,7 @@ def notify_send_email(dates, current_apt, settings, use_gmail=False):
             if username:
                     server.login(username, password)
 
-        subject = "Alert: Globaly Entry interview openings are available"
+        subject = "Alert: Global Entry interview openings are available"
 
         dateshtml = '<ul>'
         for d in dates:
