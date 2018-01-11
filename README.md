@@ -6,12 +6,25 @@ Based on the ge-cancellation-checker that originally utilized phantomjs to login
 https://github.com/davidofwatkins/ge-cancellation-checker
 
 # Getting started
-- Clone the repo
-- Copy or rename config.json.example to config.json
-- Enter required fields into config.json
-- The interview date should be in this format "December 10, 2017"
 
-## GOES center codes
+- Clone the repo
+- Copy or rename `config.json.example` to `config.json`
+  - `cp config.json.example config.json`
+- Enter required fields into `config.json`:
+  - Look up your GOES center in the list below
+  - Enter your current interview date, in a format e.g. "December 10, 2017"
+
+# Usage
+
+Run the script with `python`: `python2 goes-notify.py`
+
+If you're running this on a machine you'll be using while it's searching, you can pass `--no-email` and receive a local macOS notification when the script finds a new appointment.
+
+With `--use-gmail`, you can send yourself an email when an appointment is found. Note: if you have two-factor authentication enabled for your account, you'll need to [generate an app-specific password](https://myaccount.google.com/apppasswords) and add that to `config.json`.
+
+----
+
+# GOES center codes
 
 | ID    | Enrollment Center Name                                                                                                                |
 |-------|---------------------------------------------------------------------------------------------------------------------------------------|
