@@ -79,29 +79,30 @@ def notify_send_email(dates, current_apt, settings, use_gmail=False):
 def notify_osx(msg):
     commands.getstatusoutput("osascript -e 'display notification \"%s\" with title \"Global Entry Notifier\"'" % msg)
 
-def notify_sms(settings, avail_apt):
-    try:
-        from twilio.rest import Client
-    except ImportError:
-        logging.warning('Trying to send SMS, but TwilioRestClient not installed. Try \'pip install twilio\'')
-        return
+def notify_sms(settings, dates):
+    for avail_apt in dates: 
+        try:
+            from twilio.rest import Client
+        except ImportError:
+            logging.warning('Trying to send SMS, but TwilioRestClient not installed. Try \'pip install twilio\'')
+            return
 
-    try:
-        account_sid = settings['twilio_account_sid']
-        auth_token = settings['twilio_auth_token']
-        from_number = settings['twilio_from_number']
-        to_number = settings['twilio_to_number']
-        assert account_sid and auth_token and from_number and to_number
-    except (KeyError, AssertionError):
-        logging.warning('Trying to send SMS, but one of the required Twilio settings is missing or empty')
-        return
+        try:
+            account_sid = settings['twilio_account_sid']
+            auth_token = settings['twilio_auth_token']
+            from_number = settings['twilio_from_number']
+            to_number = settings['twilio_to_number']
+            assert account_sid and auth_token and from_number and to_number
+        except (KeyError, AssertionError):
+            logging.warning('Trying to send SMS, but one of the required Twilio settings is missing or empty')
+            return
 
-    # Twilio logs annoyingly, silence that
-    logging.getLogger('twilio').setLevel(logging.WARNING)
-    client = Client(account_sid, auth_token)
-    body = 'New GOES appointment available on %s' % avail_apt.strftime('%A, %B %d')
-    logging.info('Sending SMS.')
-    client.messages.create(body=body, to=to_number, from_=from_number)
+        # Twilio logs annoyingly, silence that
+        logging.getLogger('twilio').setLevel(logging.WARNING)
+        client = Client(account_sid, auth_token)
+        body = 'New GOES appointment available on %s' % avail_apt
+        logging.info('Sending SMS.')
+        client.messages.create(body=body, to=to_number, from_=from_number)
 
 def main(settings):
     try:
@@ -147,7 +148,7 @@ def main(settings):
     if not settings.get('no_email'):
         notify_send_email(dates, current_apt, settings, use_gmail=settings.get('use_gmail'))
     if settings.get('twilio_account_sid'):
-        notify_sms(settings, new_apt)
+        notify_sms(settings, dates)
 
 def _check_settings(config):
     required_settings = (
