@@ -99,7 +99,7 @@ def notify_sms(settings, avail_apt):
     # Twilio logs annoyingly, silence that
     logging.getLogger('twilio').setLevel(logging.WARNING)
     client = Client(account_sid, auth_token)
-    body = 'New appointment available on %s' % avail_apt.strftime('%B %d, %Y')
+    body = 'New GOES appointment available on %s' % avail_apt.strftime('%A, %B %d')
     logging.info('Sending SMS.')
     client.messages.create(body=body, to=to_number, from_=from_number)
 
