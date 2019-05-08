@@ -1,6 +1,6 @@
 # goes-notify
 
-This app will simply parse json output from the interview scheduler for many of CBP's Trusted Traveler Programs, including Global Entry, NEXUS, SENTRI, US/Mexico FAST, and US/Canada FAST. You don't need to provide a login, it will simply check the available dates against your current interview date, then notify you if a better date can be locked in.
+This app will simply parse json output from the interview scheduler for many of CBP's Trusted Traveler Programs, including Global Entry, NEXUS, SENTRI, US/Mexico FAST, and US/Canada FAST. You don't need to provide a login, it will simply check the available dates against your current interview date, then notify you if an earlier date is available.
 
 Based on the ge-cancellation-checker that originally utilized phantomjs to login as the user:
 https://github.com/davidofwatkins/ge-cancellation-checker
@@ -8,25 +8,28 @@ https://github.com/davidofwatkins/ge-cancellation-checker
 # Getting started
 
 - Clone the repo
+- Install the requirements: `pip install -r requirements.txt`
 - Copy or rename `config.json.example` to `config.json`
   - `cp config.json.example config.json`
 - Enter required fields into `config.json`:
-  - Look up your enrolment center in the list below
-  - Enter your current interview date, in a format e.g. "December 10, 2017"
+  - Look up your appointment location in the list below
+  - Enter your current interview date, in a format like "December 10, 2017"
 
 # Usage
 
-Run the script with `python`: `python2 goes-notify.py`
+Run the script with `python`: `python goes-notify.py` (python 2/3 OK)
 
-If you're running this on a machine you'll be using while it's searching, you can pass `--no-email` and receive a local macOS notification when the script finds a new appointment.
+If you're running this on a machine that you'll be using while it's searching, you can set `notify_osx` to True in the config file and receive a local macOS notification when the script finds a new appointment.
 
 With `--use-gmail`, you can send yourself an email when an appointment is found. Note: if you have two-factor authentication enabled for your account, you'll need to [generate an app-specific password](https://myaccount.google.com/apppasswords) and add that to `config.json`.
 
 ----
 
-# GOES center codes
+# Global Entry appointment location codes
 
-The table below may not be complete. If you don't see your location, visit [this link](https://ttp.cbp.dhs.gov/schedulerapi/locations/?temporary=false&inviteOnly=false&operational=true&serviceName=Global%20Entry) for a current complete list; find your desired location; and use the 'id' field as the location code in your config file: \
+(See below for other TTP programs)
+
+The table below may not be complete. If you don't see your location, visit [this link](https://ttp.cbp.dhs.gov/schedulerapi/locations/?temporary=false&inviteOnly=false&operational=true&serviceName=Global%20Entry) for a current complete list; find your desired location; and use the 'id' field as the location code in your config file:
 
 | ID    | Enrollment Center Name                                                                                                                |
 |-------|---------------------------------------------------------------------------------------------------------------------------------------|
@@ -159,7 +162,7 @@ The table below may not be complete. If you don't see your location, visit [this
 
 # Location codes for other Trusted Traveler programs
 
-Appointments for other programs, including NEXUS, SENTRI, US/Mexico FAST, and US/Canada FAST are available using the same scheduler API as Global Entry. Many sites use the same location id for multiple types of appointments, but some do not (e.g. Blaine, WA is 5020 for Nexus Appointments and 13321 for Global Entry; Ft. Erie is 5228 for US/Canada FAST and 5022) so it is best to consult the lists below to make sure you are requesting the correct type of appointment.
+Appointments for other programs, including NEXUS, SENTRI, US/Mexico FAST, and US/Canada FAST are available using the same scheduler API as Global Entry. Many sites use the same location id for multiple types of appointments, but some do not (e.g. Blaine, WA is 5020 for Nexus Appointments and 13321 for Global Entry; Ft. Erie is 5228 for US/Canada FAST and 5022 for Global Entry) so it is advisable to consult the lists below to make sure you are requesting the correct type of appointment.
 
 Retrieve the location list for each type of appointment using the URLs below. Find your desired location, and then use the 'id' field as the 'locationId' in your config file.
 

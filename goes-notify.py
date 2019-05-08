@@ -20,7 +20,7 @@ from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 
 EMAIL_TEMPLATE = """
-<p>Good news! New Global Entry appointment(s) available on the following dates:</p>
+<p>Good news! New Trusted Traveler Program appointment(s) available on the following dates:</p>
 %s
 <p>Your current appointment is on %s</p>
 <p>If this sounds good, please sign in to https://ttp.cbp.dhs.gov/ to reschedule.</p>
@@ -50,7 +50,7 @@ def notify_send_email(dates, current_apt, settings, use_gmail=False):
             if username:
                     server.login(username, password)
 
-        subject = "Alert: Global Entry interview openings are available"
+        subject = "Alert: Trusted Traveler Program interview openings are available"
 
         dateshtml = '<ul>'
         for d in dates:
@@ -76,7 +76,7 @@ def notify_send_email(dates, current_apt, settings, use_gmail=False):
 
 def notify_osx(msg):
     logging.info('Sending OS X notification.')
-    call(['osascript', '-e', 'display notification \"%s\" with title \"Global Entry Notifier\"' % msg])
+    call(['osascript', '-e', 'display notification \"%s\" with title \"Trusted Traveler Appointment Notifier\"' % msg])
 
 def notify_sms(settings, dates):
     for avail_apt in dates: 
@@ -99,7 +99,7 @@ def notify_sms(settings, dates):
         # Twilio logs annoyingly, silence that
         logging.getLogger('twilio').setLevel(logging.WARNING)
         client = Client(account_sid, auth_token)
-        body = 'New GOES appointment available on %s' % avail_apt
+        body = 'New GOES/TTP appointment available on %s' % avail_apt
         logging.info('Sending SMS.')
         client.messages.create(body=body, to=to_number, from_=from_number)
 
