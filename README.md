@@ -26,7 +26,7 @@ With `--use-gmail`, you can send yourself an email when an appointment is found.
 
 # GOES center codes
 
-The table below may not be complete. If you don't see your location, visit the following URL, look for your desired location, and use the 'id' field as the locationId: https://ttp.cbp.dhs.gov/schedulerapi/locations/?temporary=false&inviteOnly=false&operational=true&serviceName=Global%20Entry
+The table below may not be complete. If you don't see your location, visit [this link](https://ttp.cbp.dhs.gov/schedulerapi/locations/?temporary=false&inviteOnly=false&operational=true&serviceName=Global%20Entry) for a current complete list; find your desired location; and use the 'id' field as the location code in your config file: \
 
 | ID    | Enrollment Center Name                                                                                                                |
 |-------|---------------------------------------------------------------------------------------------------------------------------------------|
@@ -163,17 +163,13 @@ Appointments for other programs, including NEXUS, SENTRI, US/Mexico FAST, and US
 
 Retrieve the location list for each type of appointment using the URLs below. Find your desired location, and then use the 'id' field as the 'locationId' in your config file.
 
-NEXUS locations:
-https://ttp.cbp.dhs.gov/schedulerapi/locations/?temporary=false&inviteOnly=false&operational=true&serviceName=NEXUS. 
+ * [NEXUS location list](https://ttp.cbp.dhs.gov/schedulerapi/locations/?temporary=false&inviteOnly=false&operational=true&serviceName=NEXUS)
 
-SENTRI locations:
-https://ttp.cbp.dhs.gov/schedulerapi/locations/?temporary=false&inviteOnly=false&operational=true&serviceName=SENTRI
+ * [SENTRI location list](https://ttp.cbp.dhs.gov/schedulerapi/locations/?temporary=false&inviteOnly=false&operational=true&serviceName=SENTRI)
 
-US/Mexico FAST locations: 
-https://ttp.cbp.dhs.gov/schedulerapi/locations/?temporary=false&inviteOnly=false&operational=true&serviceName=U.S.%20%2F%20Mexico%20FAST
+ * [US/Mexico FAST location list](https://ttp.cbp.dhs.gov/schedulerapi/locations/?temporary=false&inviteOnly=false&operational=true&serviceName=U.S.%20%2F%20Mexico%20FAST)
 
-US/Canada FAST locations:
-https://ttp.cbp.dhs.gov/schedulerapi/locations/?temporary=false&inviteOnly=false&operational=true&serviceName=U.S.%20%2F%20Canada%20FAST
+ * [US/Canada FAST location list](https://ttp.cbp.dhs.gov/schedulerapi/locations/?temporary=false&inviteOnly=false&operational=true&serviceName=U.S.%20%2F%20Canada%20FAST)
 
 ## License
 MIT
