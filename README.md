@@ -1,6 +1,6 @@
 # goes-notify
 
-This app will simply parse json output from the global entry interview scheduler. You don't need to provide a login, it will simply check the available dates against your current interview date, then notify you if a better date can be locked in.
+This app will simply parse json output from the interview scheduler for many of CBP's Trusted Traveler Programs, including Global Entry, NEXUS, SENTRI, US/Mexico FAST, and US/Canada FAST. You don't need to provide a login, it will simply check the available dates against your current interview date, then notify you if a better date can be locked in.
 
 Based on the ge-cancellation-checker that originally utilized phantomjs to login as the user:
 https://github.com/davidofwatkins/ge-cancellation-checker
@@ -11,7 +11,7 @@ https://github.com/davidofwatkins/ge-cancellation-checker
 - Copy or rename `config.json.example` to `config.json`
   - `cp config.json.example config.json`
 - Enter required fields into `config.json`:
-  - Look up your GOES center in the list below
+  - Look up your enrolment center in the list below
   - Enter your current interview date, in a format e.g. "December 10, 2017"
 
 # Usage
@@ -25,6 +25,8 @@ With `--use-gmail`, you can send yourself an email when an appointment is found.
 ----
 
 # GOES center codes
+
+The table below may not be complete. If you don't see your location, visit the following URL, look for your desired location, and use the 'id' field as the locationId: https://ttp.cbp.dhs.gov/schedulerapi/locations/?temporary=false&inviteOnly=false&operational=true&serviceName=Global%20Entry
 
 | ID    | Enrollment Center Name                                                                                                                |
 |-------|---------------------------------------------------------------------------------------------------------------------------------------|
@@ -40,7 +42,8 @@ With `--use-gmail`, you can send yourself an email when an appointment is found.
 | 14221 | Boston- Tip O'Neill Federal Building - 10 Causeway Street Room 812 Boston MA 02222 US                                                 |
 | 5441  | Boston-Logan Global Entry Enrollment Center - Logan International Airport Terminal E East Boston MA 02128                             |
 | 5003  | Brownsville Enrollment Center - 3300 South Expressway 77 83 Veterans International Bridge - Los Tomates                               |
-| 5022  | Buffalo-Ft. Erie Enrollment Center - 10 CENTRAL AVENUE FORT ERIE ON L2A1G6 CA                                                         |
+| 5022  | Buffalo-Ft. Erie Enrollment Center - 10 CENTRAL AVENUE FORT ERIE ON L2A1G6 CA                                     |
+| 5500  | Calais Enrollment Center - 3 Customs Street, Calais, MAINE 04619                                                  |
 | 5006  | Calexico Enrollment Center - 1699 E. Carr Rd PO BOX 632 Calexico CA 92231 US                                                          |
 | 5030  | Calgary Enrollment Center - 2000 Airport Rd N.E. Calgary AB T2E6W5 CA                                                                 |
 | 13801 | Champlain Global Entry Enrollment Center - 237 West Service Road Champlain NY 12919 US                                                |
@@ -153,6 +156,24 @@ With `--use-gmail`, you can send yourself an email when an appointment is found.
 | 8120  | Washington DC Enrollment Center - 1300 Pennsylvania Avenue NW Washington DC 20229 US                                                  |
 | 9260  | West Palm Beach Enrollment Center - West Palm Beach Enrollment Center 1 East 11th Street Third Floor Riviera Beach                    |
 | 5029  | Winnipeg Enrollment Center - 1970 Winnipeg NEXUS Office Wellington Room 1074 Winnipeg MB R3H0E3 CA                                    |
+
+# Location codes for other Trusted Traveler programs
+
+Appointments for other programs, including NEXUS, SENTRI, US/Mexico FAST, and US/Canada FAST are available using the same scheduler API as Global Entry. Many sites use the same location id for multiple types of appointments, but some do not (e.g. Blaine, WA is 5020 for Nexus Appointments and 13321 for Global Entry; Ft. Erie is 5228 for US/Canada FAST and 5022) so it is best to consult the lists below to make sure you are requesting the correct type of appointment.
+
+Retrieve the location list for each type of appointment using the URLs below. Find your desired location, and then use the 'id' field as the 'locationId' in your config file.
+
+NEXUS locations:
+https://ttp.cbp.dhs.gov/schedulerapi/locations/?temporary=false&inviteOnly=false&operational=true&serviceName=NEXUS. 
+
+SENTRI locations:
+https://ttp.cbp.dhs.gov/schedulerapi/locations/?temporary=false&inviteOnly=false&operational=true&serviceName=SENTRI
+
+US/Mexico FAST locations: 
+https://ttp.cbp.dhs.gov/schedulerapi/locations/?temporary=false&inviteOnly=false&operational=true&serviceName=U.S.%20%2F%20Mexico%20FAST
+
+US/Canada FAST locations:
+https://ttp.cbp.dhs.gov/schedulerapi/locations/?temporary=false&inviteOnly=false&operational=true&serviceName=U.S.%20%2F%20Canada%20FAST
 
 ## License
 MIT
