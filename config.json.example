@@ -2,6 +2,7 @@
   "current_interview_date_str": "",
   "enrollment_location_id": "",
   "logfile": "",
+  "number_of_appointments_to_query": "5",
 
   "email_from": "",
   "email_to": [""],
@@ -11,7 +12,10 @@
   "email_password": "",
 
   "__comment": "Below are optional:",
-  "use_gmail": true,
+
+  "specific_date_wanted": false,
+  "exact_date_wanted": "",
+  "use_gmail": false,
   "gmail_password": "",
   "no_email": false,
   "no_spamming": true,

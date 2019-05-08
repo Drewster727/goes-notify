@@ -27,7 +27,7 @@ EMAIL_TEMPLATE = """
 <p>Your current appointment is on %s</p>
 <p>If this sounds good, please sign in to https://ttp.cbp.dhs.gov/ to reschedule.</p>
 """
-GOES_URL_FORMAT = 'https://ttp.cbp.dhs.gov/schedulerapi/slots?orderBy=soonest&limit=3&locationId={0}&minimum=1'
+GOES_URL_FORMAT = 'https://ttp.cbp.dhs.gov/schedulerapi/slots?orderBy=soonest&limit={0}&locationId={1}&minimum=1'
 
 def notify_send_email(dates, current_apt, settings, use_gmail=False):
     sender = settings.get('email_from')
@@ -107,21 +107,34 @@ def notify_sms(settings, dates):
 def main(settings):
     try:
         # obtain the json from the web url
-        data = requests.get(GOES_URL_FORMAT.format(settings['enrollment_location_id'])).json()
+        data = requests.get(GOES_URL_FORMAT.format(settings["number_of_appointments_to_query"], settings['enrollment_location_id'])).json()
 
     	# parse the json
         if not data:
             logging.info('No tests available.')
             return
 
-        current_apt = datetime.strptime(settings['current_interview_date_str'], '%B %d, %Y')
+
         dates = []
-        for o in data:
-            if o['active']:
-                dt = o['startTimestamp'] #2017-12-22T15:15
-                dtp = datetime.strptime(dt, '%Y-%m-%dT%H:%M')
-                if current_apt > dtp:
-                    dates.append(dtp.strftime('%A, %B %d @ %I:%M%p'))
+
+        if settings['specific_date_wanted']:
+            current_apt = datetime.strptime(settings['exact_date_wanted'], '%B %d, %Y')
+            for o in data:
+                if o['active']:
+                    dt = o['startTimestamp'] #2017-12-22T15:15
+                    dtp = datetime.strptime(dt, '%Y-%m-%dT%H:%M')
+                    if current_apt.date() == dtp.date():
+                        dates.append(dtp.strftime('%A, %B %d @ %I:%M%p'))
+
+
+        else:
+            current_apt = datetime.strptime(settings['current_interview_date_str'], '%B %d, %Y')
+            for o in data:
+                if o['active']:
+                    dt = o['startTimestamp'] #2017-12-22T15:15
+                    dtp = datetime.strptime(dt, '%Y-%m-%dT%H:%M')
+                    if current_apt > dtp:
+                        dates.append(dtp.strftime('%A, %B %d @ %I:%M%p'))
 
         if not dates:
             return
