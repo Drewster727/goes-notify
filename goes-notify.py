@@ -3,7 +3,6 @@
 # Note: for setting up email with sendmail, see: http://linuxconfig.org/configuring-gmail-as-sendmail-email-relay
 
 import argparse
-import commands
 import json
 import logging
 import smtplib
@@ -15,14 +14,13 @@ import hashlib
 
 from datetime import datetime
 from os import path
-from subprocess import check_output
-from distutils.spawn import find_executable
+from subprocess import call
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 
 EMAIL_TEMPLATE = """
-<p>Good news! New Global Entry appointment(s) available on the following dates:</p>
+<p>Good news! New Trusted Traveler Program appointment(s) available on the following dates:</p>
 %s
 <p>Your current appointment is on %s</p>
 <p>If this sounds good, please sign in to https://ttp.cbp.dhs.gov/ to reschedule.</p>
@@ -52,7 +50,7 @@ def notify_send_email(dates, current_apt, settings, use_gmail=False):
             if username:
                     server.login(username, password)
 
-        subject = "Alert: Global Entry interview openings are available"
+        subject = "Alert: Trusted Traveler Program interview openings are available"
 
         dateshtml = '<ul>'
         for d in dates:
@@ -77,7 +75,8 @@ def notify_send_email(dates, current_apt, settings, use_gmail=False):
         log(e)
 
 def notify_osx(msg):
-    commands.getstatusoutput("osascript -e 'display notification \"%s\" with title \"Global Entry Notifier\"'" % msg)
+    logging.info('Sending OS X notification.')
+    call(['osascript', '-e', 'display notification \"%s\" with title \"Trusted Traveler Appointment Notifier\"' % msg])
 
 def notify_sms(settings, dates):
     for avail_apt in dates: 
@@ -100,7 +99,7 @@ def notify_sms(settings, dates):
         # Twilio logs annoyingly, silence that
         logging.getLogger('twilio').setLevel(logging.WARNING)
         client = Client(account_sid, auth_token)
-        body = 'New GOES appointment available on %s' % avail_apt
+        body = 'New GOES/TTP appointment available on %s' % avail_apt
         logging.info('Sending SMS.')
         client.messages.create(body=body, to=to_number, from_=from_number)
 
@@ -126,9 +125,10 @@ def main(settings):
         if not dates:
             return
 
-        hash = hashlib.md5(''.join(dates) + current_apt.strftime('%B %d, %Y @ %I:%M%p')).hexdigest()
+        hash = hashlib.md5((''.join(dates) + current_apt.strftime('%B %d, %Y @ %I:%M%p')).encode('utf-8')).hexdigest()
         fn = "goes-notify_{0}.txt".format(hash)
         if settings.get('no_spamming') and os.path.exists(fn):
+            logging.info('Results are the identical to previous run, and no_spamming is true: do nothing.')
             return
         else:
             for f in glob.glob("goes-notify_*.txt"):
@@ -176,7 +176,7 @@ if __name__ == '__main__':
         stream=sys.stdout,
     )
 
-    pwd = path.dirname(sys.argv[0])
+    pwd = os.path.abspath(path.dirname(sys.argv[0]))
 
     # Parse Arguments
     parser = argparse.ArgumentParser(description="Command line script to check for goes openings.")
@@ -191,7 +191,7 @@ if __name__ == '__main__':
             settings = json.load(json_file)
 
             # merge args into settings IF they're True
-            for key, val in arguments.iteritems():
+            for key, val in list(arguments.items()):
                 if not arguments.get(key): continue
                 settings[key] = val
 
@@ -208,6 +208,6 @@ if __name__ == '__main__':
         handler.setLevel(logging.DEBUG)
         logging.getLogger('').addHandler(handler)
 
-    logging.debug('Running cron with arguments: %s' % arguments)
+    # logging.debug('Running cron with arguments: %s' % arguments)
 
     main(settings)
