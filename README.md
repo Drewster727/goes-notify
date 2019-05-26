@@ -8,8 +8,6 @@ https://github.com/davidofwatkins/ge-cancellation-checker
 # Getting started
 
 - Clone the repo
-- Copy or rename `config.json.example` to `config.json`
-  - `cp config.json.example config.json`
 - Enter required fields into `config.json`:
   - Look up your enrolment center in the list below
   - Enter your current interview date, in a format e.g. "December 10, 2017"
@@ -18,9 +16,15 @@ https://github.com/davidofwatkins/ge-cancellation-checker
 
 Run the script with `python`: `python2 goes-notify.py`
 
-If you're running this on a machine you'll be using while it's searching, you can pass `--no-email` and receive a local macOS notification when the script finds a new appointment.
+If you're running this on a machine you'll be using while it's searching, you can set the `no-email` config setting and receive a local macOS notification when the script finds a new appointment.
 
-With `--use-gmail`, you can send yourself an email when an appointment is found. Note: if you have two-factor authentication enabled for your account, you'll need to [generate an app-specific password](https://myaccount.google.com/apppasswords) and add that to `config.json`.
+With the `use_gmail` config setting, you can send yourself an email when an appointment is found. Note: if you have two-factor authentication enabled for your account, you'll need to [generate an app-specific password](https://myaccount.google.com/apppasswords) and add that to `config.json`.
+
+# Using Docker
+
+```
+docker run -d drewster727/goes-notify -v /path/to/config.json:/app/config.json
+```
 
 ----
 
