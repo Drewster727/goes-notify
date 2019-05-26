@@ -22,6 +22,8 @@ With the `use_gmail` config setting, you can send yourself an email when an appo
 
 # Using Docker
 
+This is the easiest way. Install docker (any operating system). Just make a copy of the config.json file, update it accordingly, and then run the below command:
+
 ```
 docker run -d drewster727/goes-notify -v /path/to/config.json:/app/config.json
 ```
