@@ -20,6 +20,7 @@ from distutils.spawn import find_executable
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
+from math import log
 
 EMAIL_TEMPLATE = """
 <p>Good news! New Global Entry appointment(s) available on the following dates:</p>
