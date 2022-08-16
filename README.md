@@ -10,7 +10,7 @@ https://github.com/davidofwatkins/ge-cancellation-checker
 - Clone the repo
 - Enter required fields into `config.json`:
   - Look up your enrolment center in the list below
-  - Enter your current interview date, in a format e.g. "December 10, 2017"
+  - Enter your current interview date in Month name-Day-Year format. E.g., "December 10, 2017"
 
 # Usage
 
@@ -27,14 +27,14 @@ If you would like to check multiple nearby locations at once you need to make co
 This is the easiest way. Install docker (any operating system). Just make a copy of the config.json file, update it accordingly, and then run the below command:
 
 ```
-docker run -d drewster727/goes-notify -v /path/to/config.json:/app/config.json
+docker run -d -v /path/to/config.json:/app/config.json drewster727/goes-notify
 ```
 
 ----
 
 # GOES center codes
 
-The table below may not be complete. If you don't see your location, visit [this link](https://ttp.cbp.dhs.gov/schedulerapi/locations/?temporary=false&inviteOnly=false&operational=true&serviceName=Global%20Entry) for a current complete list; find your desired location; and use the 'id' field as the location code in your config file: \
+The table below may not be complete. If you don't see your location, visit [this link](https://ttp.cbp.dhs.gov/schedulerapi/locations/?temporary=false&inviteOnly=false&operational=true&serviceName=Global%20Entry) for a current complete list; find your desired location; and use the 'id' field as the location code in your config file:
 
 | ID    | Enrollment Center Name                                                                                                                |
 |-------|---------------------------------------------------------------------------------------------------------------------------------------|
@@ -50,13 +50,12 @@ The table below may not be complete. If you don't see your location, visit [this
 | 14221 | Boston- Tip O'Neill Federal Building - 10 Causeway Street Room 812 Boston MA 02222 US                                                 |
 | 5441  | Boston-Logan Global Entry Enrollment Center - Logan International Airport Terminal E East Boston MA 02128                             |
 | 5003  | Brownsville Enrollment Center - 3300 South Expressway 77 83 Veterans International Bridge - Los Tomates                               |
-| 5022  | Buffalo-Ft. Erie Enrollment Center - 10 CENTRAL AVENUE FORT ERIE ON L2A1G6 CA                                     |
-| 5500  | Calais Enrollment Center - 3 Customs Street, Calais, MAINE 04619                                                  |
+| 5022  | Buffalo-Ft. Erie Enrollment Center - 10 CENTRAL AVENUE FORT ERIE ON L2A1G6 CA                                                         |
+| 5500  | Calais Enrollment Center - 3 Customs Street, Calais, MAINE 04619                                                                      |
 | 5006  | Calexico Enrollment Center - 1699 E. Carr Rd PO BOX 632 Calexico CA 92231 US                                                          |
 | 5030  | Calgary Enrollment Center - 2000 Airport Rd N.E. Calgary AB T2E6W5 CA                                                                 |
 | 13801 | Champlain Global Entry Enrollment Center - 237 West Service Road Champlain NY 12919 US                                                |
 | 14321 | Charlotte-Douglas - DOWNSTAIRS LOCATION - 5501 Charlotte-Douglas International Airport Josh Birmingham Parkway                        |
-| 6880  | Charlotte-Douglas International Airport - 5501 Charlotte-Douglas International Airport Josh Birmingham Parkway                        |
 | 11981 | Chicago Field Office Enrollment Center - 610 Closed until further notice Closed until futher notice  Chicago                          |
 | 5183  | Chicago O'Hare International Global Entry EC  - 10000 Bessie Coleman Drive Terminal 5 Lower Level Chicago                             |
 | 7680  | Cincinnati Enrollment Center - 4243 Olympic Blvd. Suite. 210 Erlanger KY 41018 US                                                     |
@@ -167,7 +166,7 @@ The table below may not be complete. If you don't see your location, visit [this
 
 # Location codes for other Trusted Traveler programs
 
-Appointments for other programs, including NEXUS, SENTRI, US/Mexico FAST, and US/Canada FAST are available using the same scheduler API as Global Entry. Many sites use the same location id for multiple types of appointments, but some do not (e.g. Blaine, WA is 5020 for Nexus Appointments and 13321 for Global Entry; Ft. Erie is 5228 for US/Canada FAST and 5022) so it is best to consult the lists below to make sure you are requesting the correct type of appointment.
+Appointments for other programs, including NEXUS, SENTRI, US/Mexico FAST, and US/Canada FAST are available using the same scheduler API as Global Entry. Many sites use the same location id for multiple types of appointments, but some do not (e.g., Blaine, WA is 5020 for Nexus Appointments and 13321 for Global Entry; Ft. Erie is 5228 for US/Canada FAST and 5022) so it is best to consult the lists below to make sure you are requesting the correct type of appointment.
 
 Retrieve the location list for each type of appointment using the URLs below. Find your desired location, and then use the 'id' field as the 'locationId' in your config file.
 
