@@ -20,6 +20,8 @@ If you're running this on a machine you'll be using while it's searching, you ca
 
 With the `use_gmail` config setting, you can send yourself an email when an appointment is found. Note: if you have two-factor authentication enabled for your account, you'll need to [generate an app-specific password](https://myaccount.google.com/apppasswords) and add that to `config.json`.
 
+If you would like to check multiple nearby locations at once you need to make copies the original file you just edited and change the location code on each config file. Then in seperate windows run each copy of the diffrent locations.
+
 # Using Docker
 
 This is the easiest way. Install docker (any operating system). Just make a copy of the config.json file, update it accordingly, and then run the below command:
