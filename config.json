@@ -4,11 +4,13 @@
   "logfile": "",
 
   "email_from": "",
+  "email_display_name": "GOES-notify Alerts",
   "email_to": [""],
   "email_server": "localhost",
   "email_port": 25,
   "email_username": "",
   "email_password": "",
+  "email_disable_tls": false,
 
   "__comment": "Below are optional:",
   "use_gmail": true,

@@ -17,6 +17,7 @@ from datetime import datetime
 from os import path
 from subprocess import check_output
 from distutils.spawn import find_executable
+from email.utils import formataddr
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
@@ -32,6 +33,7 @@ GOES_URL_FORMAT = 'https://ttp.cbp.dhs.gov/schedulerapi/slots?orderBy=soonest&li
 
 def notify_send_email(dates, current_apt, settings, use_gmail=False):
     sender = settings.get('email_from')
+    display_name = settings.get('email_display_name')
     recipient = settings.get('email_to', sender)  # If recipient isn't provided, send to self.
 
     try:
@@ -46,10 +48,12 @@ def notify_send_email(dates, current_apt, settings, use_gmail=False):
         else:
             username = settings.get('email_username').encode('utf-8')
             password = settings.get('email_password').encode('utf-8')
+            disable_tls = settings.get('email_disable_tls')
             server = smtplib.SMTP(settings.get('email_server'), settings.get('email_port'))
             server.ehlo()
-            server.starttls()
-            server.ehlo()
+            if not disable_tls:
+                server.starttls()
+                server.ehlo()
             if username:
                     server.login(username, password)
 
@@ -65,7 +69,10 @@ def notify_send_email(dates, current_apt, settings, use_gmail=False):
 
         msg = MIMEMultipart()
         msg['Subject'] = subject
-        msg['From'] = sender
+        if display_name:
+            msg['From'] = formataddr((display_name, sender))
+        else: 
+            msg['From'] = sender
         msg['To'] = ','.join(recipient)
         msg['mime-version'] = "1.0"
         msg['content-type'] = "text/html"
