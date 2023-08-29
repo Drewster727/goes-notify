@@ -24,7 +24,7 @@ from email.mime.multipart import MIMEMultipart
 from math import log
 
 EMAIL_TEMPLATE = """
-<p>Good news! New Global Entry appointment(s) available on the following dates:</p>
+<p>Good news! New Global Entry appointment(s) available at %s on the following dates:</p>
 %s
 <p>Your current appointment is on %s</p>
 <p>If this sounds good, please sign in to https://ttp.cbp.dhs.gov/ to reschedule.</p>
@@ -35,6 +35,10 @@ def notify_send_email(dates, current_apt, settings, use_gmail=False):
     sender = settings.get('email_from')
     display_name = settings.get('email_display_name')
     recipient = settings.get('email_to', sender)  # If recipient isn't provided, send to self.
+    location_id = settings.get("enrollment_location_id")
+    location_name = settings.get("enrollment_location_name")
+    if not location_name:
+            location_name = location_id
 
     try:
         if use_gmail:
@@ -65,7 +69,7 @@ def notify_send_email(dates, current_apt, settings, use_gmail=False):
 
         dateshtml += "</ul>"
 
-        message = EMAIL_TEMPLATE % (dateshtml, current_apt.strftime('%B %d, %Y'))
+        message = EMAIL_TEMPLATE % (location_name, dateshtml, current_apt.strftime('%B %d, %Y'))
 
         msg = MIMEMultipart()
         msg['Subject'] = subject
@@ -105,10 +109,15 @@ def notify_sms(settings, dates):
             logging.warning('Trying to send SMS, but one of the required Twilio settings is missing or empty')
             return
 
+        location_id = settings.get("enrollment_location_id")
+        location_name = settings.get("enrollment_location_name")
+        if not location_name:
+            location_name = location_id
+
         # Twilio logs annoyingly, silence that
         logging.getLogger('twilio').setLevel(logging.WARNING)
         client = Client(account_sid, auth_token)
-        body = 'New GOES appointment available on %s' % avail_apt
+        body = 'New GOES appointment available at %s on %s' % (location_name, avail_apt)
         logging.info('Sending SMS.')
         client.messages.create(body=body, to=to_number, from_=from_number)
 
@@ -148,7 +157,11 @@ def main(settings):
         logging.critical("Something went wrong when trying to obtain the openings")
         return
 
-    msg = 'Found new appointment(s) in location %s on %s (current is on %s)!' % (settings.get("enrollment_location_id"), dates[0], current_apt.strftime('%B %d, %Y @ %I:%M%p'))
+    location_id = settings.get("enrollment_location_id")
+    location_name = settings.get("enrollment_location_name")
+    if not location_name:
+            location_name = location_id
+    msg = 'Found new appointment(s) in location %s on %s (current is on %s)!' % (location_name, dates[0], current_apt.strftime('%B %d, %Y @ %I:%M%p'))
     logging.info(msg + (' Sending email.' if not settings.get('no_email') else ' Not sending email.'))
 
     if settings.get('notify_osx'):
